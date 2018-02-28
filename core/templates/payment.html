@@ -1,0 +1,31 @@
+{% load static %}
+<html>
+<head>
+    <title>Payment</title>
+    <link rel="stylesheet" href="{% static "style.css" %}">
+</head>
+<body>
+<form class="payment-form">
+    <div class="error-row"></div>
+    <div class="row">
+        <label for="user">User:</label>
+        <select id="user" name="user">
+            {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="row">
+        <label for="inn">INN: </label>
+        <input id="inn" type="text" name="inn" placeholder="INN">
+    </div>
+    <div class="row">
+        <label for="amount">Amount: </label>
+        <input id="amount" type="text" name="amount" placeholder="Amount">
+    </div>
+    {% csrf_token %}
+    <input type="submit">
+</form>
+</body>
+<script src="{% static "script.js" %}"></script>
+</html>

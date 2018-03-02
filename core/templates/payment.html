@@ -6,8 +6,8 @@
 </head>
 <body>
 <form class="payment-form">
-    <div class="error-row"></div>
     <div class="row">
+        <div class="error error-user"></div>
         <label for="user">User:</label>
         <select id="user" name="user">
             {% for user in users %}
@@ -16,10 +16,12 @@
         </select>
     </div>
     <div class="row">
+        <div class="error error-inn"></div>
         <label for="inn">INN: </label>
         <input id="inn" type="text" name="inn" placeholder="INN">
     </div>
     <div class="row">
+        <div class="error error-amount"></div>
         <label for="amount">Amount: </label>
         <input id="amount" type="text" name="amount" placeholder="Amount">
     </div>

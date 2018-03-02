@@ -4,7 +4,7 @@ const sendPost = (url, payload, csrf) => {
     return new Promise((success) => {
             const req = new XMLHttpRequest();
             req.open("POST", url, true);
-            req.setRequestHeader('contentType', 'application/json; charset=utf-8');
+            req.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
             req.setRequestHeader('X-CSRFToken', csrf);
             req.addEventListener('load', () => {
                 if(req.status < 400){
@@ -17,6 +17,12 @@ const sendPost = (url, payload, csrf) => {
 
 const form = document.getElementsByClassName('payment-form')[0];
 const errorRow = document.getElementsByClassName('error-row')[0];
+const clearErrors = () => {
+    const errorFields = Array.from(document.getElementsByClassName('error'));
+    errorFields.map((item) => {
+        item.innerHTML = '';
+    })
+};
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     const data = {};
@@ -25,12 +31,14 @@ form.addEventListener('submit', (e) => {
     data.amount = form.querySelector('[name="amount"]').value;
     sendPost('/transaction', data, form.querySelector('[name="csrfmiddlewaretoken"]').value).then((response) => {
         const data = JSON.parse(response);
+        clearErrors();
         if(data.error){
-            errorRow.innerHTML = data.message;
+            for(let index in data.error){
+                form.getElementsByClassName(`error-${index}`)[0].innerHTML = data.error[index];
+            }
         }else{
             form.querySelector('[name="inn"]').value = '';
             form.querySelector('[name="amount"]').value = '';
-            errorRow.innerHTML = data.message;
         }
     })
 });

@@ -34,7 +34,10 @@ class PaymentViewTest(TestCase):
         response = self.client.post(TRANSACTION_URL, data=None)
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
-            {'error': True, 'message': 'Wrong request format'}
+            {'error': {'amount': ['This field is required.'],
+                       'inn': ['This field is required.'],
+                       'userId': ['This field is required.']}}
+
         )
 
     def test_request_wrong_data(self):
@@ -42,15 +45,18 @@ class PaymentViewTest(TestCase):
         response = self.client.post(TRANSACTION_URL, data=data, content_type="application/json")
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
-            {'error': True, 'message': 'Something gone wrong'}
+             {'error': {'amount': ['This field is required.'],
+                                     'inn': ['This field is required.'],
+                         'userId': ['This field is required.']}}
+
         )
 
     def test_user_not_found(self):
-        data = json.dumps({'userId': '500', 'inn': '123', 'amount': '123'})
+        data = json.dumps({'userId': '500', 'inn': '1', 'amount': '123'})
         response = self.client.post(TRANSACTION_URL, data=data, content_type="application/json")
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
-            {'error': True, 'message': 'User not found'}
+            {'error': {'userId': ['User not found']}},
         )
 
     def test_target_user_not_found(self):
@@ -58,7 +64,7 @@ class PaymentViewTest(TestCase):
         response = self.client.post(TRANSACTION_URL, data=data, content_type="application/json")
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
-            {'error': True, 'message': 'Destination users not found'}
+            {'error': {'inn': ['Users not found']}}
         )
 
     def test_not_enough_money(self):
@@ -66,7 +72,7 @@ class PaymentViewTest(TestCase):
         response = self.client.post(TRANSACTION_URL, data=data, content_type="application/json")
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
-            {'error': True, 'message': 'Not enough money'}
+            {'error': {'amount': 'Not enough money'}}
         )
 
     def test_payment_success(self):
@@ -74,7 +80,7 @@ class PaymentViewTest(TestCase):
         response = self.client.post(TRANSACTION_URL, data=data, content_type="application/json")
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
-            {'error': False, 'message': 'Success'}
+            {'error': False}
         )
 
     def test_payment_one_user(self):

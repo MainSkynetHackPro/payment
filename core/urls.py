@@ -1,6 +1,6 @@
 from django.urls import path
 
-from core.views import PaymentView, process_transaction, TransactionAPI
+from core.views import PaymentView, TransactionAPI
 
 app_name = 'payment'
 
